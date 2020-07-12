@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     char sc_char[3];
 
     // posti in a
-    c = 0;
+    int c = 0;
     int n = 0;
     while (bufferin[c] != '\0') {
       if (bufferin[c] == 'A') {
