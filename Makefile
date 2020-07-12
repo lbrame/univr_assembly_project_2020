@@ -2,17 +2,14 @@ GCC = gcc -m32
 FLAGS = -g -Wpedantic
 
 all:
-	$(GCC) $(FLAGS) -o parking parking.c
+	$(GCC) $(FLAGS) -c -o parking.o parking.c
+	$(GCC) $(FLAGS) -c -o core_asm.o core_asm.s
+	$(GCC) $(FLAGS) -o parking parking.o core_asm.o
 
 run:
-	$(GCC) $(FLAGS) -o parking parking.c
-	./parking testin.txt testout.txt
-
-test:
-	$(GCC) $(FLAGS) -o parking playground.c
-
-testrun:
-	$(GCC) $(FLAGS) -o parking playground.c
+	$(GCC) $(FLAGS) -c parking.o parking.c
+	$(GCC) $(FLAGS) -c -o core_asm.o core_asm.s
+	$(GCC) $(FLAGS) -o parking parking.o core_asm.o
 	./parking testin.txt testout.txt
 
 clean:
