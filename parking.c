@@ -7,7 +7,7 @@
 #include <sys/time.h>
 
 /* Inserite eventuali extern modules qui */
-extern char core_asm(char bufferin);
+extern void core_asm(char *bufferin, char* bufferout_asm);
 /* ************************************* */
 
 enum { MAXLINES = 200 };
@@ -148,7 +148,6 @@ int main(int argc, char *argv[]) {
         n++;
       }
       if (strcmp(buffer, "IN-A") == 0) {
-        printf("entrato in A\n");
         n = 0;  // azzero il contatore
         // pulisco il buffer
         for (i=0; i<6; i++) {
@@ -161,40 +160,39 @@ int main(int argc, char *argv[]) {
         }
           
         // appendo
-        sprintf(sb_char,"%d",sb);
         sprintf(sa_char,"%d",sa);
+        sprintf(sb_char,"%d",sb);
         sprintf(sc_char,"%d",sc);
         if (updated == 1)
-          strcat(bufferout_asm, "OC-");
+          strcat(bufferout_c, "OC-");
         else
-          strcat(bufferout_asm, "CC-");
+          strcat(bufferout_c, "CC-");
         if (sa < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sa_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sa_char);
+        strcat(bufferout_c, "-");
         if (sb < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sb_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sb_char);
+        strcat(bufferout_c, "-");
         if (sc < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sc_char);
-        strcat(bufferout_asm, "-");
-        strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sc_char);
+        strcat(bufferout_c, "-");
+        strcat(bufferout_c, "0");
         if (sb >= sb_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
         if (sc >= sc_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, "\n");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, "\n");
         // pulisco updated
         updated = 0;
       }
       else if (strcmp(buffer, "IN-B") == 0) {
-        printf("entrato in B\n");
         n = 0;
         // pulisco il buffer
         for (i=0; i<6; i++) {
@@ -206,40 +204,39 @@ int main(int argc, char *argv[]) {
           updated = 1;
         }
         // appendo
-        sprintf(sb_char,"%d",sb);
         sprintf(sa_char,"%d",sa);
+        sprintf(sb_char,"%d",sb);
         sprintf(sc_char,"%d",sc);
         if (updated == 1)
-          strcat(bufferout_asm, "OC-");
+          strcat(bufferout_c, "OC-");
         else
-          strcat(bufferout_asm, "CC-");
+          strcat(bufferout_c, "CC-");
         if (sa < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sa_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sa_char);
+        strcat(bufferout_c, "-");
         if (sb < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sb_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sb_char);
+        strcat(bufferout_c, "-");
         if (sc < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sc_char);
-        strcat(bufferout_asm, "-");
-        strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sc_char);
+        strcat(bufferout_c, "-");
+        strcat(bufferout_c, "0");
         if (sb >= sb_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
         if (sc >= sc_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, "\n");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, "\n");
         // pulisco updated
         updated = 0;
       }
       else if ( strcmp(buffer, "IN-C") == 0) {
-        printf("entrato in C\n");
         n = 0;
         // pulisco il buffer
         for (i=0; i<6; i++) {
@@ -251,40 +248,39 @@ int main(int argc, char *argv[]) {
           updated = 1;
         }
         // appendo
-        sprintf(sb_char,"%d",sb);
         sprintf(sa_char,"%d",sa);
+        sprintf(sb_char,"%d",sb);
         sprintf(sc_char,"%d",sc);
         if (updated == 1)
-          strcat(bufferout_asm, "OC-");
+          strcat(bufferout_c, "OC-");
         else
-          strcat(bufferout_asm, "CC-");
+          strcat(bufferout_c, "CC-");
         if (sa < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sa_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sa_char);
+        strcat(bufferout_c, "-");
         if (sb < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sb_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sb_char);
+        strcat(bufferout_c, "-");
         if (sc < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sc_char);
-        strcat(bufferout_asm, "-");
-        strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sc_char);
+        strcat(bufferout_c, "-");
+        strcat(bufferout_c, "0");
         if (sb >= sb_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
         if (sc >= sc_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, "\n");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, "\n");
         // pulisco updated
         updated = 0;
       }
       else if ( strcmp(buffer, "OUT-A") == 0) {
-        printf("uscito da A\n");
         n = 0;
         // pulisco il buffer
         for (i=0; i<6; i++) {
@@ -296,38 +292,37 @@ int main(int argc, char *argv[]) {
           updated = 1;
         }
         // appendo
-        sprintf(sb_char,"%d",sb);
         sprintf(sa_char,"%d",sa);
+        sprintf(sb_char,"%d",sb);
         sprintf(sc_char,"%d",sc);
         if (updated == 1)
-          strcat(bufferout_asm, "CO-");
+          strcat(bufferout_c, "CO-");
         else
-          strcat(bufferout_asm, "CC-");
+          strcat(bufferout_c, "CC-");
         if (sa < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sa_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sa_char);
+        strcat(bufferout_c, "-");
         if (sb < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sb_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sb_char);
+        strcat(bufferout_c, "-");
         if (sc < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sc_char);
-        strcat(bufferout_asm, "-");
-        strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sc_char);
+        strcat(bufferout_c, "-");
+        strcat(bufferout_c, "0");
         if (sb >= sb_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
         if (sc >= sc_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, "\n");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, "\n");
       }
       else if ( strcmp(buffer, "OUT-B") == 0) {
-        printf("uscito da B\n");
         n = 0;
         // pulisco il buffer
         for (i=0; i<6; i++) {
@@ -340,40 +335,39 @@ int main(int argc, char *argv[]) {
         }
           
         // appendo
-        sprintf(sb_char,"%d",sb);
         sprintf(sa_char,"%d",sa);
+        sprintf(sb_char,"%d",sb);
         sprintf(sc_char,"%d",sc);
         if (updated == 1)
-          strcat(bufferout_asm, "CO-");
+          strcat(bufferout_c, "CO-");
         else
-          strcat(bufferout_asm, "CC-");
+          strcat(bufferout_c, "CC-");
         if (sa < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sa_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sa_char);
+        strcat(bufferout_c, "-");
         if (sb < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sb_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sb_char);
+        strcat(bufferout_c, "-");
         if (sc < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sc_char);
-        strcat(bufferout_asm, "-");
-        strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sc_char);
+        strcat(bufferout_c, "-");
+        strcat(bufferout_c, "0");
         if (sb >= sb_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
         if (sc >= sc_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, "\n");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, "\n");
         // pulisco updated
         updated = 0;
       }
       else if ( strcmp(buffer, "OUT-C") == 0) {
-        printf("uscito da C\n");
         n = 0;
         // pulisco il buffer
         for (i=0; i<6; i++) {
@@ -385,40 +379,39 @@ int main(int argc, char *argv[]) {
           updated = 1;
         }
         // appendo
-        sprintf(sb_char,"%d",sb);
         sprintf(sa_char,"%d",sa);
+        sprintf(sb_char,"%d",sb);
         sprintf(sc_char,"%d",sc);
         if (updated == 1)
-          strcat(bufferout_asm, "CO-");
+          strcat(bufferout_c, "CO-");
         else
-          strcat(bufferout_asm, "CC-");
+          strcat(bufferout_c, "CC-");
         if (sa < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sa_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sa_char);
+        strcat(bufferout_c, "-");
         if (sb < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sb_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sb_char);
+        strcat(bufferout_c, "-");
         if (sc < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sc_char);
-        strcat(bufferout_asm, "-");
-        strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sc_char);
+        strcat(bufferout_c, "-");
+        strcat(bufferout_c, "0");
         if (sb >= sb_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
         if (sc >= sc_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, "\n");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, "\n");
         // pulisco updated
         updated = 0;
       }
       else if (buffer[0] == 'A' || buffer[0] == 'B' || buffer[0] == 'C') {
-        printf("Prime tre righe\n");
         n = 0;
         // pulisco il buffer
         for (i=0; i<6; i++) {
@@ -426,7 +419,6 @@ int main(int argc, char *argv[]) {
         }
       }
       else {
-        printf("Comando malformato\n");
         // copiare i vecchi n caratteri dell'output
         // precedente nel buffer
         n = 0;
@@ -434,32 +426,32 @@ int main(int argc, char *argv[]) {
         for (i=0; i<6; i++) {
           buffer[i] = 0;
         }
-        sprintf(sb_char,"%d",sb);
         sprintf(sa_char,"%d",sa);
+        sprintf(sb_char,"%d",sb);
         sprintf(sc_char,"%d",sc);
-        strcat(bufferout_asm, "CC-");
+        strcat(bufferout_c, "CC-");
         if (sa < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sa_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sa_char);
+        strcat(bufferout_c, "-");
         if (sb < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sb_char);
-        strcat(bufferout_asm, "-");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sb_char);
+        strcat(bufferout_c, "-");
         if (sc < 10)
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, sc_char);
-        strcat(bufferout_asm, "-");
-        strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, sc_char);
+        strcat(bufferout_c, "-");
+        strcat(bufferout_c, "0");
         if (sb >= sb_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
+          strcat(bufferout_c, "0");
         if (sc >= sc_max)
-          strcat(bufferout_asm, "1");
+          strcat(bufferout_c, "1");
         else
-          strcat(bufferout_asm, "0");
-        strcat(bufferout_asm, "\n");
+          strcat(bufferout_c, "0");
+        strcat(bufferout_c, "\n");
       }
       c++;
     }
@@ -467,12 +459,11 @@ int main(int argc, char *argv[]) {
 
     printf("TEST\n");
     c = 0;
-    while (bufferout_asm[c] != '\0') {
-      printf("%c", bufferout_asm[c]);
+    while (bufferout_c[c] != '\0') {
+      printf("%c", bufferout_c[c]);
       c++;
     }
     
-
     toc_c = current_timestamp();
 
   	long long c_time_in_nanos = toc_c - tic_c;
@@ -488,6 +479,7 @@ int main(int argc, char *argv[]) {
     Inserite qui il vostro blocco di codice assembly inline o richiamo a funzioni assembly.
     Il blocco di codice prende come input 'bufferin' e deve restituire una variabile stringa 'bufferout_asm' che verrà poi salvata su file. */
 
+    core_asm(bufferin, bufferout_asm);
 
     toc_asm = current_timestamp();
 
