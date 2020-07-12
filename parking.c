@@ -63,13 +63,14 @@ int main(int argc, char *argv[]) {
     /* è possibile inserire qui il codice per l'elaborazione in C (non richiesto per l'elaborato) */
     /* questo pezzo di codice è solo una base di partenza per fare dei check sui dati */
     
-    
+    /*
     int c = 0;
     while ( bufferin[c] != '\0') {
       printf( "%c", bufferin[c] );
       // strncat( bufferout_asm, &bufferin[c], 1);
       c = c + 1 ;
     }
+    */
     
     char sa_char[3];
     char sb_char[3];
