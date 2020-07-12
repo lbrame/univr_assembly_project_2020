@@ -7,7 +7,7 @@
 #include <sys/time.h>
 
 /* Inserite eventuali extern modules qui */
-extern void core_asm(char *bufferin, char* bufferout_asm);
+extern void core_asm(char *bufferin, char *bufferout_asm);
 /* ************************************* */
 
 enum { MAXLINES = 200 };
@@ -453,14 +453,6 @@ int main(int argc, char *argv[]) {
           strcat(bufferout_c, "0");
         strcat(bufferout_c, "\n");
       }
-      c++;
-    }
-
-
-    printf("TEST\n");
-    c = 0;
-    while (bufferout_c[c] != '\0') {
-      printf("%c", bufferout_c[c]);
       c++;
     }
     
