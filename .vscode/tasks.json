@@ -4,14 +4,27 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "make",
+            "label": "entrmake",
             "type": "shell",
-            "command": "make",
+            "command": "bash entrmake.sh",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "make",
+            "type": "shell",
+            "command": "make",
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
+            "label": "edb debug",
+            "type": "shell",
+            "command": "edb",
+            "args": ["--run", "parking", "testin.txt", "testout.txt"]
         }
     ]
 }

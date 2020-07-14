@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "gdb",
+            "request": "launch",
+            "name": "Native Debug",
+            "target": "./parking",
+            "arguments": "testin.txt testout.txt",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "make",
+            "valuesFormatting": "parseText",
+            "debugger_args":[]
+        },
+        {
             "name": "gcc - Build and debug active file",
             "type": "cppdbg",
             "request": "launch",
