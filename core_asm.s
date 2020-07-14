@@ -10,53 +10,12 @@
 // bufferout_asm:
 //     .fill 3001,1,0
 
-sa_max:
-    .long 31
 
-sb_max:
-    .long 31
-
-sc_max:
-    .long 24
-
-sa_arr:
-    .ascii "0000"
-
-sb_arr:
-    .ascii "0000"
-
-sc_arr:
-    .ascii "0000"
-
-a_letter:
-    .ascii "A"
-
-b_letter:
-    .ascii "B"
-
-c_letter:
-    .ascii "C"
-
-sa:
-    .long 0
-
-sb:
-    .long 0
-
-sc:
-    .long 0
-
-buff:
-    .ascii "0000000"
-
-buff_len:
-    .long 7
-
-entrato:
-    .asciz "Entrato"
-
-entrato_len:
-    .long 8
+buff:   .ascii "0000000"
+buff_len:   .long 7
+str1:   .asciz "test"
+str2:   .asciz "test"
+retval: .long -1
 
 
 .text
@@ -75,3 +34,13 @@ core_asm:
 return:
     popl %ebp
     ret
+
+test_strcmp:
+    leal str1, %esi
+    leal str2, %edi
+    call strcmp_asm
+    movl %eax, retval
+    cmpl $1, %eax
+    je exit_fail
+    jmp exit_success
+
