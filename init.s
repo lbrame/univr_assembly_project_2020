@@ -4,6 +4,18 @@ char_a:     .ascii "A"
 char_b:     .ascii "B"
 char_c:     .ascii "C"
 char_nl:    .ascii "\n"
+buff_a:     .ascii "0000"
+buff_b:     .ascii "0000"
+buff_c:     .ascii "0000"
+int_a:      .long 0
+int_b:      .long 0
+int_c:      .long 0
+in_a:       .asciz "IN-A"
+in_b:       .asciz "IN-B"
+in_c:       .asciz "IN-C"
+out_a:      .asciz "OUT-A"
+out_b:      .asciz "OUT-B"
+out_c:      .asciz "OUT-C"
 
 .section .text
     .global init
@@ -18,6 +30,7 @@ init:
     Initialize A, B, C sectors
     %esi: bufferin
     %eax: temporary register for comparison
+    %ebx: second temporary register
     %ecx: char counter
     %edx: line number (from 0)
     (%esi,%ecx): bufferin[%ecx]
@@ -51,6 +64,24 @@ parse_slots:    # parse initial values for sectors' capacity (A,B,C)
     
 parse_a:
     xorl %eax, %eax
+    pushl %edi
+    pushl %ecx
+    leal buff_a, %edi
+    xorl %edx, %edx
+    incl %ecx
+
+parse_a_loop:
+    movb (%esi,%ecx), %al
+    movb %al, (%edi,%edx)
+    incl %ecx
+    incl %edx
+    cmpb char_nl, %al
+    je parse_a_done
+    jmp parse_a_loop
+
+parse_a_done:
+    popl %ecx
+    popl %edi
     jmp parse_next
 
 parse_b:

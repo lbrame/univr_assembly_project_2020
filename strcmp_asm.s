@@ -6,15 +6,15 @@
     // %eax: return value
     // %ebx: temp
     // %ecx: counter string 1
-    // %edx: counter string 2
-    // %esi: string 1
+    // %esi: string 1 (null-terminated)
     // %edi: string 2
+    // NOTE: At least the first string (%esi) must be
+    // null-terminated.
     
 strcmp_asm:
     xorl %eax, %eax
     xorl %ebx, %ebx
     xorl %ecx, %ecx
-    xorl %edx, %edx    
 
 compare_loop:
     movb (%esi,%ecx), %bl
