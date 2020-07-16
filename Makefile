@@ -7,7 +7,9 @@ all:
 	$(GCC) $(FLAGS) -c -o init.o init.s
 	$(GCC) $(FLAGS) -c -o strcmp_asm.o strcmp_asm.s
 	$(GCC) $(FLAGS) -c -o atoi_asm.o atoi_asm.s
-	$(GCC) $(FLAGS) -o parking parking.o core_asm.o init.o strcmp_asm.o atoi_asm.o
+	$(GCC) $(FLAGS) -c -o strcat_asm.o strcat_asm.s
+	$(GCC) $(FLAGS) -c -o itoa_asm.o itoa_asm.s
+	$(GCC) $(FLAGS) -o parking parking.o core_asm.o init.o strcmp_asm.o atoi_asm.o strcat_asm.o itoa_asm.o
 
 run:
 	$(GCC) $(FLAGS) -c parking.o parking.c
@@ -15,7 +17,9 @@ run:
 	$(GCC) $(FLAGS) -c -o init.o init.s
 	$(GCC) $(FLAGS) -c -o strcmp_asm.o strcmp_asm.s
 	$(GCC) $(FLAGS) -c -o atoi_asm.o atoi_asm.s
-	$(GCC) $(FLAGS) -o parking parking.o core_asm.o init.o strcmp_asm.o atoi_asm.o
+	$(GCC) $(FLAGS) -c -o strcat_asm.o strcat_asm.s
+	$(GCC) $(FLAGS) -c -o itoa_asm.o itoa_asm.s
+	$(GCC) $(FLAGS) -o parking parking.o core_asm.o init.o strcmp_asm.o atoi_asm.o strcat_asm.o itoa_asm.o
 	./parking testin.txt testout.txt
 
 clean:

@@ -4,18 +4,10 @@
 
 .data
 
-// bufferin:
-//     .fill 1001,1,0
-// 
-// bufferout_asm:
-//     .fill 3001,1,0
-
-
-buff:   .ascii "0000000"
-buff_len:   .long 7
-str1:   .asciz "IN-A"
-str2:   .ascii "IN-A"
-retval: .long -1
+srcs:   .ascii "bruh\00000000000000000000000000000000000000000"
+dsts:   .asciz "moment"
+num:    .long 31
+buff:   .ascii "000000000000000000000000000000000000"
 
 .text
     .global core_asm
@@ -34,29 +26,37 @@ return:
     popl %ebp
     ret
 
-/*
-test_atoi:
-    pushl %esi
+test_itoa_asm:
+    
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
     pushl %edi
-    leal numstr, %edi
-    call atoi_asm
-    movl %eax, toprint
+    movl num, %eax
+    leal buff, %edi
+    call itoa_asm
     popl %edi
-    popl %esi
-*/
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+    
 
-test_strcmp:
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
     pushl %esi
     pushl %edi
-    leal str1, %esi
-    leal str2, %edi
-    call strcmp_asm
+    leal buff, %edi
+    call atoi_asm
     popl %edi
     popl %esi
-    movl %eax, retval
-    cmpl $1, %eax
-    je exit_fail
-    jmp exit_success
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
 
 exit_success:
     movl $1, %eax

@@ -1,5 +1,6 @@
 .section .data
     char_nl_atoi:    .ascii "\n"
+    char_nl_ter:     .ascii "\0"
 
 .section .text
     .global atoi_asm
@@ -20,6 +21,8 @@ atoi_asm:
 atoi_count_chars:
     movb (%edi,%ecx), %al
     cmpb char_nl_atoi, %al
+    je atoi_execute
+    cmpb char_nl_ter, %al
     je atoi_execute
     jmp atoi_count_chars_loop
 
