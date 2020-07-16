@@ -7,9 +7,9 @@ char_nl:    .ascii "\n"
 buff_a:     .ascii "0000"
 buff_b:     .ascii "0000"
 buff_c:     .ascii "0000"
-int_a:      .long 0
-int_b:      .long 0
-int_c:      .long 0
+int_a:      .word 0
+int_b:      .word 0
+int_c:      .word 0
 in_a:       .asciz "IN-A"
 in_b:       .asciz "IN-B"
 in_c:       .asciz "IN-C"
@@ -66,6 +66,7 @@ parse_a:
     xorl %eax, %eax
     pushl %edi
     pushl %ecx
+    pushl %edx
     leal buff_a, %edi
     xorl %edx, %edx
     incl %ecx
@@ -76,21 +77,101 @@ parse_a_loop:
     incl %ecx
     incl %edx
     cmpb char_nl, %al
-    je parse_a_done
+    je parse_a_atoi
     jmp parse_a_loop
 
-parse_a_done:
+parse_a_atoi:
+    popl %edx
     popl %ecx
     popl %edi
+    pushl %esi
+    pushl %edi
+    pushl %ebp
+    pushl %ecx
+    pushl %edx
+    leal buff_a, %edi
+    call atoi_asm
+    movw %ax, int_a
+    popl %edx
+    popl %ecx
+    popl %ebp
+    popl %edi
+    popl %esi
     jmp parse_next
 
 parse_b:
     xorl %eax, %eax
+    pushl %edi
+    pushl %ecx
+    pushl %edx
+    leal buff_b, %edi
+    xorl %edx, %edx
+    incl %ecx
+
+parse_b_loop:
+    movb (%esi,%ecx), %al
+    movb %al, (%edi,%edx)
+    incl %ecx
+    incl %edx
+    cmpb char_nl, %al
+    je parse_b_atoi
+    jmp parse_b_loop
+
+parse_b_atoi:
+    popl %edx
+    popl %ecx
+    popl %edi
+    pushl %esi
+    pushl %edi
+    pushl %ebp
+    pushl %ecx
+    pushl %edx
+    leal buff_b, %edi
+    call atoi_asm
+    movw %ax, int_b
+    popl %edx
+    popl %ecx
+    popl %ebp
+    popl %edi
+    popl %esi
     jmp parse_next
 
 parse_c:
     xorl %eax, %eax
+    pushl %edi
+    pushl %ecx
+    pushl %edx
+    leal buff_c, %edi
+    xorl %edx, %edx
+    incl %ecx
+
+parse_c_loop:
+    movb (%esi,%ecx), %al
+    movb %al, (%edi,%edx)
+    incl %ecx
+    incl %edx
+    cmpb char_nl, %al
+    je parse_c_atoi
+    jmp parse_c_loop
+
+parse_c_atoi:
+    popl %edx
+    popl %ecx
+    popl %edi
+    pushl %esi
+    pushl %edi
+    pushl %ebp
+    pushl %edx
+    leal buff_c, %edi
+    call atoi_asm
+    movw %ax, int_c
+    popl %edx
+    popl %ebp
+    popl %edi
+    popl %esi
     jmp parse_next
+
+
 
 parse_command:  # parse IN/OUT commands
     jmp parse_next
