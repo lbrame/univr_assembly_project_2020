@@ -44,5 +44,5 @@ atoi_asm_loop:
     inc %esi
     loopl atoi_asm_loop
 
-atoi_asm_done: 
+atoi_asm_done:
     ret

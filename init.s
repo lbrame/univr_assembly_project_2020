@@ -20,6 +20,7 @@ buff_cmd:   .asciz "000000"
 max_a:      .word 31
 max_b:      .word 31
 max_c:      .word 24
+testbuff:   .ascii "0000"
 
 .section .text
     .global init
@@ -255,6 +256,40 @@ parse_command_in_a_success:
     xorl %eax, %eax
     incw %bx
     movw %bx, int_a
+    xorl %eax, %eax
+    movw %bx, %ax
+
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %edi
+    xorl %eax, %eax
+    movw int_a, %ax
+    leal buff_a, %edi
+    call itoa_asm
+    popl %edi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+    leal buff_a, %edi
+    call atoi_asm
+    movw %ax, int_a
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+
     jmp parse_next
 
 parse_command_in_b:

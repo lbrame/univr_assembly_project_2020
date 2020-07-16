@@ -7,7 +7,9 @@
 srcs:   .ascii "bruh\00000000000000000000000000000000000000000"
 dsts:   .asciz "moment"
 num:    .long 31
-buff:   .ascii "000000000000000000000000000000000000"
+buff:   .ascii "31\n00000000000000000000000000000000"
+buffd:  .long 0
+num2:   .long 0
 
 .text
     .global core_asm
@@ -26,8 +28,24 @@ return:
     popl %ebp
     ret
 
+test_atoi_asm:
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+    leal buff, %edi
+    call atoi_asm
+    movl %eax, buffd
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+
 test_itoa_asm:
-    
     pushl %eax
     pushl %ebx
     pushl %ecx
@@ -41,7 +59,6 @@ test_itoa_asm:
     popl %ecx
     popl %ebx
     popl %eax
-    
 
     pushl %eax
     pushl %ebx
@@ -51,6 +68,7 @@ test_itoa_asm:
     pushl %edi
     leal buff, %edi
     call atoi_asm
+    movl %eax, buffd
     popl %edi
     popl %esi
     popl %edx

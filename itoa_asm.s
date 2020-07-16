@@ -2,6 +2,7 @@
 
 tmp:    .byte 0
 ter:    .ascii "\0"
+lf:     .ascii "\n"
 
 .section .text
     .global itoa_asm
@@ -64,6 +65,6 @@ itoa_asm_div_done:
 
 itoa_asm_done:
     xorl %ecx, %ecx
-    movb ter, %cl
+    movb lf, %cl
     movb %cl, (%edi,%edx)
     ret

@@ -23,4 +23,4 @@ run:
 	./parking testin.txt testout.txt
 
 clean:
-	rm parking testout.txt
+	rm parking parking.o core_asm.o init.o strcmp_asm.o atoi_asm.o strcat_asm.o itoa_asm.o testout.txt
