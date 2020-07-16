@@ -16,6 +16,7 @@ in_c:       .asciz "IN-C"
 out_a:      .asciz "OUT-A"
 out_b:      .asciz "OUT-B"
 out_c:      .asciz "OUT-C"
+buff_cmd:   .asciz "000000"
 
 .section .text
     .global init
@@ -176,7 +177,113 @@ parse_c_atoi:
 
 
 parse_command:  # parse IN/OUT commands
+    pushl %edi
+    pushl %ecx
+    pushl %edx
+    xorl %eax, %eax
+    xorl %edx, %edx
+    leal buff_cmd, %edi
+
+parse_command_loop:
+    movb (%esi,%ecx), %al
+    movb %al, (%edi,%edx)
+    cmpb char_nl, %al
+    je parse_command_loop_end
+    incl %ecx
+    incl %edx
+    jmp parse_command_loop
+
+parse_command_loop_end:
+    popl %edx
+    popl %ecx
+    popl %edi
+
+    # Compare with known valid strings
+    pushl %ecx
+    pushl %esi
+    pushl %edi
+    leal in_a, %esi
+    leal buff_cmd, %edi
+    call strcmp_asm
+    testl %eax, %eax
+    jz parse_command_in_a
+    leal in_b, %esi
+    leal buff_cmd, %edi
+    call strcmp_asm
+    testl %eax, %eax
+    jz parse_command_in_b
+    leal in_c, %esi
+    leal buff_cmd, %edi
+    call strcmp_asm
+    testl %eax, %eax
+    jz parse_command_in_c
+    leal out_a, %esi
+    leal buff_cmd, %edi
+    call strcmp_asm
+    testl %eax, %eax
+    jz parse_command_out_a
+    leal out_b, %esi
+    leal buff_cmd, %edi
+    call strcmp_asm
+    testl %eax, %eax
+    jz parse_command_out_b
+    leal out_c, %esi
+    leal buff_cmd, %edi
+    call strcmp_asm
+    testl %eax, %eax
+    jz parse_command_out_c
+    jmp parse_command_invalid
+    
+
+
+parse_command_in_a:
+    popl %edi
+    popl %esi
+    popl %ecx
+    xorl %eax, %eax
     jmp parse_next
+
+parse_command_in_b:
+    popl %edi
+    popl %esi
+    popl %ecx
+    xorl %eax, %eax
+    jmp parse_next
+
+parse_command_in_c:
+    popl %edi
+    popl %esi
+    popl %ecx
+    xorl %eax, %eax
+    jmp parse_next
+
+parse_command_out_a:
+    popl %edi
+    popl %esi
+    popl %ecx
+    xorl %eax, %eax
+    jmp parse_next
+
+parse_command_out_b:
+    popl %edi
+    popl %esi
+    popl %ecx
+    xorl %eax, %eax
+    jmp parse_next
+
+parse_command_out_c:
+    popl %edi
+    popl %esi
+    popl %ecx
+    xorl %eax, %eax
+    jmp parse_next
+
+parse_command_invalid:
+    popl %edi
+    popl %esi
+    popl %ecx
+    jmp parse_error
+
 
 parse_next:
     xorl %eax, %eax
