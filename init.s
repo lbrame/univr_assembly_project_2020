@@ -47,7 +47,7 @@ parse_line:
     jz parse_complete
     xorl %eax, %eax             # clean eax for upcoming ops
     cmpl $3, %edx               # check if the init phase is over
-    jle parse_slots             # parse commands from line 4 onwards
+    jl parse_slots             # parse commands from line 4 onwards
     jmp parse_command
 
 
@@ -161,11 +161,13 @@ parse_c_atoi:
     pushl %esi
     pushl %edi
     pushl %ebp
+    pushl %ecx
     pushl %edx
     leal buff_c, %edi
     call atoi_asm
     movw %ax, int_c
     popl %edx
+    popl %ecx
     popl %ebp
     popl %edi
     popl %esi

@@ -31,9 +31,6 @@ atoi_execute:
     xorl %eax, %eax     # Clean eax to prepare to return
     xorl %ebx, %ebx
     movl $10, %ebx      # Base 10 for arithmetic shift
-    // movl $2, %ecx       # Max length of string
-    # "18\n"
-    // decl %ecx           # Skip "\n"
     xorl %esi, %esi
 
 atoi_asm_loop:
