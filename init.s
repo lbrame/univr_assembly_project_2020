@@ -17,6 +17,9 @@ out_a:      .asciz "OUT-A"
 out_b:      .asciz "OUT-B"
 out_c:      .asciz "OUT-C"
 buff_cmd:   .asciz "000000"
+max_a:      .word 31
+max_b:      .word 31
+max_c:      .word 24
 
 .section .text
     .global init
@@ -235,12 +238,23 @@ parse_command_loop_end:
     jmp parse_command_invalid
     
 
-
 parse_command_in_a:
     popl %edi
     popl %esi
     popl %ecx
     xorl %eax, %eax
+    xorl %ebx, %ebx
+    movw max_a, %ax
+    movw int_a, %bx
+    cmpw %ax, %bx
+    jl parse_command_in_a_success
+    jmp parse_command_failure
+    
+
+parse_command_in_a_success:
+    xorl %eax, %eax
+    incw %bx
+    movw %bx, int_a
     jmp parse_next
 
 parse_command_in_b:
@@ -278,11 +292,14 @@ parse_command_out_c:
     xorl %eax, %eax
     jmp parse_next
 
+parse_command_failure:
+    jmp parse_next
+
 parse_command_invalid:
     popl %edi
     popl %esi
     popl %ecx
-    jmp parse_error
+    jmp parse_next
 
 
 parse_next:
