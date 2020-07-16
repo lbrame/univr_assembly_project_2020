@@ -261,7 +261,18 @@ parse_command_in_b:
     popl %edi
     popl %esi
     popl %ecx
+    xorl %eax, %eax  
+    xorl %ebx, %ebx
+    movw max_b, %ax
+    movw int_b, %bx
+    cmpw %ax, %bx
+    jl parse_command_in_b_success
+    jmp parse_command_failure  
+
+parse_command_in_b_success:
     xorl %eax, %eax
+    incw %bx
+    movw %bx, int_b
     jmp parse_next
 
 parse_command_in_c:
@@ -269,6 +280,17 @@ parse_command_in_c:
     popl %esi
     popl %ecx
     xorl %eax, %eax
+    xorl %ebx, %ebx
+    movw max_c, %ax
+    movw int_c, %bx
+    cmpw %ax, %bx
+    jl parse_command_in_c_success
+    jmp parse_command_failure
+
+parse_command_in_c_success:
+    xorl %eax, %eax
+    incw %bx
+    movw %bx, int_c
     jmp parse_next
 
 parse_command_out_a:
@@ -276,6 +298,9 @@ parse_command_out_a:
     popl %esi
     popl %ecx
     xorl %eax, %eax
+    movw int_a, %ax
+    decw %ax
+    movw %ax, int_a
     jmp parse_next
 
 parse_command_out_b:
@@ -283,6 +308,9 @@ parse_command_out_b:
     popl %esi
     popl %ecx
     xorl %eax, %eax
+    movw int_b, %ax
+    decw %ax
+    movw %ax, int_b
     jmp parse_next
 
 parse_command_out_c:
@@ -290,6 +318,9 @@ parse_command_out_c:
     popl %esi
     popl %ecx
     xorl %eax, %eax
+    movw int_c, %ax
+    decw %ax
+    movw %ax, int_c
     jmp parse_next
 
 parse_command_failure:
