@@ -266,141 +266,9 @@ parse_command_in_a_success:
     xorl %eax, %eax
     movw %bx, %ax
 
-
-    // Update IN_A buffer
-    pushl %eax
-    pushl %ebx
-    pushl %ecx
-    pushl %edx
-    pushl %esi
-    pushl %edi
-    
-    // Update sectors' array values
-    xorl %eax, %eax
-    movw int_a, %ax
-    leal buff_a, %edi
-    call itoa_asm
-    xorl %eax, %eax
-    movw int_b, %ax
-    leal buff_b, %edi
-    call itoa_asm
-    xorl %eax, %eax
-    movw int_c, %ax
-    leal buff_c, %edi
-    call itoa_asm
-
-    popl %edi
-    popl %esi
-    popl %edx
-    popl %ecx
-    popl %ebx
-    popl %eax
-
-    pushl %eax
-    pushl %ebx
-    pushl %ecx
-    pushl %edx
-    pushl %esi
-    pushl %edi
-
-    // Replace \n with \0 to work with strcat_asm
-    leal buff_a, %edi
-    call nltoz
-    // popl %edi
-    // pushl %edi
-    leal buff_b, %edi
-    call nltoz
-    // popl %edi
-    // pushl %edi
-    leal buff_c, %edi
-    call nltoz
-    // popl %edi
-
-    popl %edi
-    popl %esi
-    popl %edx
-    popl %ecx
-    popl %ebx
-    popl %eax
-
-    pushl %eax
-    pushl %ebx
-    pushl %ecx
-    pushl %edx
-    pushl %esi
-    pushl %edi
-
-    // Append to bufferout_asm
-    movl %edi, %esi
-    leal char_open, %edi
-    call strcat_asm
-    leal char_closed, %edi
-    call strcat_asm
-    leal char_sep, %edi
-    call strcat_asm
-    // Sector A
-    xorl %eax, %eax
-    movw $10, %ax
-    cmpw $10, int_a
-    jl parse_command_in_a_success_addzero_a
-parse_command_in_a_success_a:
-    leal buff_a, %edi
-    call strcat_asm
-    leal char_sep, %edi
-    call strcat_asm
-    // Sector B
-    xorl %eax, %eax
-    movw $10, %ax
-    cmpw $10, int_b
-    jl parse_command_in_a_success_addzero_b
-parse_command_in_a_success_b:
-    leal buff_b, %edi
-    call strcat_asm
-    leal char_sep, %edi
-    call strcat_asm
-    // Sector C
-    xorl %eax, %eax
-    movw $10, %ax
-    cmpw $10, int_c
-    jl parse_command_in_a_success_addzero_c
-parse_command_in_a_success_c:
-    leal buff_c, %edi
-    call strcat_asm
-    leal char_sep, %edi
-    call strcat_asm
-    // Empty/Full status
-    leal char_zero, %edi
-    call strcat_asm
-    leal char_zero, %edi
-    call strcat_asm
-    leal char_zero, %edi
-    call strcat_asm
-    leal char_nl_z, %edi
-    call strcat_asm
-    jmp parse_command_in_a_success_done
-
-parse_command_in_a_success_addzero_a:
-    leal char_zero, %edi
-    call strcat_asm
-    jmp parse_command_in_a_success_a
-
-parse_command_in_a_success_addzero_b:
-    leal char_zero, %edi
-    call strcat_asm
-    jmp parse_command_in_a_success_b
-
-parse_command_in_a_success_addzero_c:
-    leal char_zero, %edi
-    call strcat_asm
-    jmp parse_command_in_a_success_c
-
-parse_command_in_a_success_done:
-    popl %edi
-    popl %esi
-    popl %edx
-    popl %ecx
-    popl %ebx
-    popl %eax
+    call update_arrays
+    call fix_arrays
+    call append_in_success
 
     jmp parse_next
 
@@ -420,6 +288,7 @@ parse_command_in_b_success:
     xorl %eax, %eax
     incw %bx
     movw %bx, int_b
+    
     jmp parse_next
 
 parse_command_in_c:
@@ -497,9 +366,138 @@ prepare_to_parse_line:
 
 parse_complete:
     ret
-    
 
 parse_error:
     movl $1, %eax       # syscall_exit
     movl $1, %ebx       # return value 1 (failure)
     int $0x80
+
+update_arrays:
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+    // Update sectors' array values
+    xorl %eax, %eax
+    movw int_a, %ax
+    leal buff_a, %edi
+    call itoa_asm
+    xorl %eax, %eax
+    movw int_b, %ax
+    leal buff_b, %edi
+    call itoa_asm
+    xorl %eax, %eax
+    movw int_c, %ax
+    leal buff_c, %edi
+    call itoa_asm
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+    ret
+
+fix_arrays:
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+    // Replace \n with \0 to work with strcat_asm
+    leal buff_a, %edi
+    call nltoz
+    leal buff_b, %edi
+    call nltoz
+    leal buff_c, %edi
+    call nltoz
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+    ret
+
+append_in_success:
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+    // Append to bufferout_asm
+    movl %edi, %esi
+    leal char_open, %edi
+    call strcat_asm
+    leal char_closed, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Sector A
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_a
+    jl parse_command_in_success_addzero_a
+parse_command_in_success_a:
+    leal buff_a, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Sector B
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_b
+    jl parse_command_in_success_addzero_b
+parse_command_in_success_b:
+    leal buff_b, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Sector C
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_c
+    jl parse_command_in_success_addzero_c
+parse_command_in_success_c:
+    leal buff_c, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Empty/Full status
+    leal char_zero, %edi
+    call strcat_asm
+    leal char_zero, %edi
+    call strcat_asm
+    leal char_zero, %edi
+    call strcat_asm
+    leal char_nl_z, %edi
+    call strcat_asm
+    jmp parse_command_in_success_done
+
+parse_command_in_success_addzero_a:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp parse_command_in_success_a
+
+parse_command_in_success_addzero_b:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp parse_command_in_success_b
+
+parse_command_in_success_addzero_c:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp parse_command_in_success_c
+
+parse_command_in_success_done:
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+    ret
