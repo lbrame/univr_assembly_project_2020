@@ -331,7 +331,7 @@ parse_command_in_a_success:
     pushl %edi
 
     // Append to bufferout_asm
-    movl %edi, %esi                 # Likely the culprit
+    movl %edi, %esi
     leal char_open, %edi
     call strcat_asm
     leal char_closed, %edi
@@ -401,8 +401,6 @@ parse_command_in_a_success_done:
     popl %ecx
     popl %ebx
     popl %eax
-
-    // !!! Non c'è niente in esi! come è possibile però
 
     jmp parse_next
 
