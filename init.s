@@ -4,6 +4,11 @@ char_a:         .ascii "A"
 char_b:         .ascii "B"
 char_c:         .ascii "C"
 char_nl:        .ascii "\n"
+char_open:      .asciz "O"
+char_closed:    .asciz "C"
+char_sep:       .asciz "-"
+char_zero:      .asciz "0"
+char_one:       .asciz "1"
 buff_a:         .asciz "000"
 buff_b:         .asciz "000"
 buff_c:         .asciz "000"
@@ -20,10 +25,6 @@ buff_cmd:       .asciz "000000"
 max_a:          .word 31
 max_b:          .word 31
 max_c:          .word 24
-char_open:      .asciz "O"
-char_closed:    .asciz "C"
-char_sep:       .asciz "-"
-char_zero:      .asciz "0"
 
 .section .text
     .global init
@@ -271,6 +272,8 @@ parse_command_in_a_success:
     pushl %edx
     pushl %esi
     pushl %edi
+    
+    // Update sectors' array values
     xorl %eax, %eax
     movw int_a, %ax
     leal buff_a, %edi
@@ -283,24 +286,11 @@ parse_command_in_a_success:
     movw int_c, %ax
     leal buff_c, %edi
     call itoa_asm
-    popl %edi
-    popl %esi
-    popl %edx
-    popl %ecx
-    popl %ebx
-    popl %eax
 
-    pushl %eax
-    pushl %ebx
-    pushl %ecx
-    pushl %edx
-    pushl %esi
-    pushl %edi
-    pushl %edi
+    // Replace \n with \0 to work with strcat_asm
     leal buff_a, %edi
-    call nltoz                  # ERRORE
+    call nltoz
     popl %edi
-    // FIXARE: a e b escono 0
     pushl %edi
     leal buff_b, %edi
     call nltoz
@@ -309,21 +299,8 @@ parse_command_in_a_success:
     leal buff_c, %edi
     call nltoz
     popl %edi
-    popl %edi
-    popl %esi
-    popl %edx
-    popl %ecx
-    popl %ebx
-    popl %eax
-    
 
-    // TODO: aggiungere gli zeri alla roba minore di 10
-    pushl %eax
-    pushl %ebx
-    pushl %ecx
-    pushl %edx
-    pushl %esi
-    pushl %edi
+    // Append to bufferout_asm
     movl %edi, %esi
     leal char_open, %edi
     call strcat_asm
@@ -341,13 +318,23 @@ parse_command_in_a_success:
     call strcat_asm
     leal buff_c, %edi
     call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    leal char_zero, %edi
+    call strcat_asm
+    leal char_zero, %edi
+    call strcat_asm
+    leal char_zero, %edi
+    call strcat_asm
+    leal char_nl, %edi
+    call strcat_asm
+
     popl %edi
     popl %esi
     popl %edx
     popl %ecx
     popl %ebx
     popl %eax
-
 
     jmp parse_next
 
