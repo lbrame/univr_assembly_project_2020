@@ -10,6 +10,7 @@ num:    .long 31
 buff:   .ascii "31\n00000000000000000000000000000000"
 buffd:  .long 0
 num2:   .long 0
+buffnl: .ascii "19\n"
 
 .text
     .global core_asm
@@ -22,11 +23,28 @@ core_asm:
     xorl %ecx, %ecx         # counter
     xorl %edx, %edx         # secondary counter
     
+    // jmp test_nltoz
     call init
 
 return:
     popl %ebp
     ret
+
+test_nltoz:
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+    leal buffnl, %edi
+    call nltoz
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
 
 test_atoi_asm:
     pushl %eax

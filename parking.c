@@ -71,6 +71,7 @@ int main(int argc, char *argv[]) {
       c = c + 1 ;
     }
     */
+
     
     char sa_char[3];
     char sb_char[3];
@@ -456,6 +457,7 @@ int main(int argc, char *argv[]) {
       }
       c++;
     }
+    
     
     toc_c = current_timestamp();
 

@@ -3,6 +3,8 @@
 .section .text
     .global strcmp_asm
 
+.type strcmp_asm, @function
+
     // %eax: return value
     // %ebx: temp
     // %ecx: counter string 1

@@ -5,6 +5,8 @@
 .section .text
     .global atoi_asm
 
+.type atoi_asm, @function
+
     /*
     %eax: return integer
     %ebx: 10 for left shift

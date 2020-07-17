@@ -1,29 +1,34 @@
 .section .data
 
-char_a:     .ascii "A"
-char_b:     .ascii "B"
-char_c:     .ascii "C"
-char_nl:    .ascii "\n"
-buff_a:     .ascii "0000"
-buff_b:     .ascii "0000"
-buff_c:     .ascii "0000"
-int_a:      .word 0
-int_b:      .word 0
-int_c:      .word 0
-in_a:       .asciz "IN-A"
-in_b:       .asciz "IN-B"
-in_c:       .asciz "IN-C"
-out_a:      .asciz "OUT-A"
-out_b:      .asciz "OUT-B"
-out_c:      .asciz "OUT-C"
-buff_cmd:   .asciz "000000"
-max_a:      .word 31
-max_b:      .word 31
-max_c:      .word 24
-testbuff:   .ascii "0000"
+char_a:         .ascii "A"
+char_b:         .ascii "B"
+char_c:         .ascii "C"
+char_nl:        .ascii "\n"
+buff_a:         .asciz "000"
+buff_b:         .asciz "000"
+buff_c:         .asciz "000"
+int_a:          .word 0
+int_b:          .word 0
+int_c:          .word 0
+in_a:           .asciz "IN-A"
+in_b:           .asciz "IN-B"
+in_c:           .asciz "IN-C"
+out_a:          .asciz "OUT-A"
+out_b:          .asciz "OUT-B"
+out_c:          .asciz "OUT-C"
+buff_cmd:       .asciz "000000"
+max_a:          .word 31
+max_b:          .word 31
+max_c:          .word 24
+char_open:      .asciz "O"
+char_closed:    .asciz "C"
+char_sep:       .asciz "-"
+char_zero:      .asciz "0"
 
 .section .text
     .global init
+
+.type init, @function
 
 init:
     xorl %eax, %eax
@@ -259,16 +264,27 @@ parse_command_in_a_success:
     xorl %eax, %eax
     movw %bx, %ax
 
+    // Update IN_A buffer
     pushl %eax
     pushl %ebx
     pushl %ecx
     pushl %edx
+    pushl %esi
     pushl %edi
     xorl %eax, %eax
     movw int_a, %ax
     leal buff_a, %edi
     call itoa_asm
+    xorl %eax, %eax
+    movw int_b, %ax
+    leal buff_b, %edi
+    call itoa_asm
+    xorl %eax, %eax
+    movw int_c, %ax
+    leal buff_c, %edi
+    call itoa_asm
     popl %edi
+    popl %esi
     popl %edx
     popl %ecx
     popl %ebx
@@ -280,15 +296,58 @@ parse_command_in_a_success:
     pushl %edx
     pushl %esi
     pushl %edi
+    pushl %edi
     leal buff_a, %edi
-    call atoi_asm
-    movw %ax, int_a
+    call nltoz                  # ERRORE
+    popl %edi
+    // FIXARE: a e b escono 0
+    pushl %edi
+    leal buff_b, %edi
+    call nltoz
+    popl %edi
+    pushl %edi
+    leal buff_c, %edi
+    call nltoz
+    popl %edi
     popl %edi
     popl %esi
     popl %edx
     popl %ecx
     popl %ebx
     popl %eax
+    
+
+    // TODO: aggiungere gli zeri alla roba minore di 10
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+    movl %edi, %esi
+    leal char_open, %edi
+    call strcat_asm
+    leal char_closed, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    leal buff_a, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    leal buff_b, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    leal buff_c, %edi
+    call strcat_asm
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+
 
     jmp parse_next
 

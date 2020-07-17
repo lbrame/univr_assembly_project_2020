@@ -25,12 +25,14 @@ strcat_asm:
 strlen_loop:
     movb (%esi,%ecx), %al
     testb %al, %al
-    jz strcat_asm_loop
+    jz strcat_asm_loop_pre
     incl %ecx
     jmp strlen_loop
 
-strcat_asm_loop:
+strcat_asm_loop_pre:
     xorl %eax, %eax
+
+strcat_asm_loop:
     movb (%edi,%edx), %al
     testb %al, %al
     jz strcat_asm_done
