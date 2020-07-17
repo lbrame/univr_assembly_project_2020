@@ -4,6 +4,7 @@ char_a:         .ascii "A"
 char_b:         .ascii "B"
 char_c:         .ascii "C"
 char_nl:        .ascii "\n"
+char_nl_z:      .asciz "\n"
 char_open:      .asciz "O"
 char_closed:    .asciz "C"
 char_sep:       .asciz "-"
@@ -326,7 +327,7 @@ parse_command_in_a_success:
     call strcat_asm
     leal char_zero, %edi
     call strcat_asm
-    leal char_nl, %edi
+    leal char_nl_z, %edi
     call strcat_asm
 
     popl %edi
