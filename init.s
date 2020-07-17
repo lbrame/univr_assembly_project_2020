@@ -266,6 +266,7 @@ parse_command_in_a_success:
     xorl %eax, %eax
     movw %bx, %ax
 
+
     // Update IN_A buffer
     pushl %eax
     pushl %ebx
@@ -288,21 +289,49 @@ parse_command_in_a_success:
     leal buff_c, %edi
     call itoa_asm
 
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+
     // Replace \n with \0 to work with strcat_asm
     leal buff_a, %edi
     call nltoz
-    popl %edi
-    pushl %edi
+    // popl %edi
+    // pushl %edi
     leal buff_b, %edi
     call nltoz
-    popl %edi
-    pushl %edi
+    // popl %edi
+    // pushl %edi
     leal buff_c, %edi
     call nltoz
+    // popl %edi
+
     popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
 
     // Append to bufferout_asm
-    movl %edi, %esi
+    movl %edi, %esi                 # Likely the culprit
     leal char_open, %edi
     call strcat_asm
     leal char_closed, %edi
@@ -372,6 +401,8 @@ parse_command_in_a_success_done:
     popl %ecx
     popl %ebx
     popl %eax
+
+    // !!! Non c'è niente in esi! come è possibile però
 
     jmp parse_next
 
