@@ -309,18 +309,37 @@ parse_command_in_a_success:
     call strcat_asm
     leal char_sep, %edi
     call strcat_asm
+    // Sector A
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_a
+    jl parse_command_in_a_success_addzero_a
+parse_command_in_a_success_a:
     leal buff_a, %edi
     call strcat_asm
     leal char_sep, %edi
     call strcat_asm
+    // Sector B
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_b
+    jl parse_command_in_a_success_addzero_b
+parse_command_in_a_success_b:
     leal buff_b, %edi
     call strcat_asm
     leal char_sep, %edi
     call strcat_asm
+    // Sector C
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_c
+    jl parse_command_in_a_success_addzero_c
+parse_command_in_a_success_c:
     leal buff_c, %edi
     call strcat_asm
     leal char_sep, %edi
     call strcat_asm
+    // Empty/Full status
     leal char_zero, %edi
     call strcat_asm
     leal char_zero, %edi
@@ -329,7 +348,24 @@ parse_command_in_a_success:
     call strcat_asm
     leal char_nl_z, %edi
     call strcat_asm
+    jmp parse_command_in_a_success_done
 
+parse_command_in_a_success_addzero_a:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp parse_command_in_a_success_a
+
+parse_command_in_a_success_addzero_b:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp parse_command_in_a_success_b
+
+parse_command_in_a_success_addzero_c:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp parse_command_in_a_success_c
+
+parse_command_in_a_success_done:
     popl %edi
     popl %esi
     popl %edx
