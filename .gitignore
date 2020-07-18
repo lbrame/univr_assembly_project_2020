@@ -1,0 +1,6 @@
+altro/
+backup/
+test/
+*.o
+parking
+testout.txt

@@ -23,8 +23,17 @@ core_asm:
     xorl %ecx, %ecx         # counter
     xorl %edx, %edx         # secondary counter
     
-    // jmp test_nltoz
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
     call init
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+
+    
 
 return:
     popl %ebp

@@ -54,8 +54,12 @@ init:
     */
 
 parse_line:
+    movb (%esi,%ecx), %al
+    testb %al, %al
+    jz parse_complete
+    xorl %eax, %eax
     leal (%esi,%ecx), %eax
-    testl %eax, %eax            # check if terminator is reached
+    testb %al, %al            # check if terminator is reached
     jz parse_complete
     xorl %eax, %eax             # clean eax for upcoming ops
     cmpl $3, %edx               # check if the init phase is over
@@ -288,6 +292,10 @@ parse_command_in_b_success:
     xorl %eax, %eax
     incw %bx
     movw %bx, int_b
+
+    call update_arrays
+    call fix_arrays
+    call append_in_success
     
     jmp parse_next
 
@@ -307,6 +315,11 @@ parse_command_in_c_success:
     xorl %eax, %eax
     incw %bx
     movw %bx, int_c
+
+    call update_arrays
+    call fix_arrays
+    call append_in_success
+
     jmp parse_next
 
 parse_command_out_a:
@@ -351,9 +364,11 @@ parse_command_invalid:
 
 parse_next:
     xorl %eax, %eax
+    movb (%esi,%ecx), %al
+    testb %al, %al
+    jz parse_complete       # exit when "\0" escape is reached
+    xorl %eax, %eax
     movb char_nl, %al
-    testl %eax, %eax
-    je parse_complete       # exit when "\0" escape is reached
     cmpb (%esi,%ecx), %al
     je prepare_to_parse_line
     incl %ecx
@@ -441,8 +456,8 @@ append_in_success:
     xorl %eax, %eax
     movw $10, %ax
     cmpw $10, int_a
-    jl parse_command_in_success_addzero_a
-parse_command_in_success_a:
+    jl append_in_success_addzero_a
+append_in_success_a:
     leal buff_a, %edi
     call strcat_asm
     leal char_sep, %edi
@@ -451,8 +466,8 @@ parse_command_in_success_a:
     xorl %eax, %eax
     movw $10, %ax
     cmpw $10, int_b
-    jl parse_command_in_success_addzero_b
-parse_command_in_success_b:
+    jl append_in_success_addzero_b
+append_in_success_b:
     leal buff_b, %edi
     call strcat_asm
     leal char_sep, %edi
@@ -461,12 +476,13 @@ parse_command_in_success_b:
     xorl %eax, %eax
     movw $10, %ax
     cmpw $10, int_c
-    jl parse_command_in_success_addzero_c
-parse_command_in_success_c:
+    jl append_in_success_addzero_c
+append_in_success_c:
     leal buff_c, %edi
     call strcat_asm
     leal char_sep, %edi
     call strcat_asm
+
     // Empty/Full status
     leal char_zero, %edi
     call strcat_asm
@@ -476,24 +492,25 @@ parse_command_in_success_c:
     call strcat_asm
     leal char_nl_z, %edi
     call strcat_asm
-    jmp parse_command_in_success_done
+    
+    jmp append_in_success_done
 
-parse_command_in_success_addzero_a:
+append_in_success_addzero_a:
     leal char_zero, %edi
     call strcat_asm
-    jmp parse_command_in_success_a
+    jmp append_in_success_a
 
-parse_command_in_success_addzero_b:
+append_in_success_addzero_b:
     leal char_zero, %edi
     call strcat_asm
-    jmp parse_command_in_success_b
+    jmp append_in_success_b
 
-parse_command_in_success_addzero_c:
+append_in_success_addzero_c:
     leal char_zero, %edi
     call strcat_asm
-    jmp parse_command_in_success_c
+    jmp append_in_success_c
 
-parse_command_in_success_done:
+append_in_success_done:
     popl %edi
     popl %esi
     popl %edx

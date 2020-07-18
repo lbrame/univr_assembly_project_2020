@@ -11,7 +11,7 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            } 
         },
         {
             "label": "make",
@@ -24,7 +24,11 @@
             "label": "edb debug",
             "type": "shell",
             "command": "edb",
-            "args": ["--run", "parking", "testin.txt", "testout.txt"]
+            "args": ["--run", "parking", "testin.txt", "testout.txt"],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
         }
     ]
 }
