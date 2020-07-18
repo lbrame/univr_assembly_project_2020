@@ -21,6 +21,13 @@
             "group": "build"
         },
         {
+            "label": "make run",
+            "type": "shell",
+            "command": "make run && cat testout.txt",
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
             "label": "edb debug",
             "type": "shell",
             "command": "edb",

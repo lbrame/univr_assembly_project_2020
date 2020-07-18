@@ -457,8 +457,7 @@ int main(int argc, char *argv[]) {
       }
       c++;
     }
-    
-    
+        
     toc_c = current_timestamp();
 
   	long long c_time_in_nanos = toc_c - tic_c;

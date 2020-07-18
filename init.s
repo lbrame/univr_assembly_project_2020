@@ -330,6 +330,9 @@ parse_command_out_a:
     movw int_a, %ax
     decw %ax
     movw %ax, int_a
+    call update_arrays
+    call fix_arrays
+    call append_out
     jmp parse_next
 
 parse_command_out_b:
@@ -340,6 +343,9 @@ parse_command_out_b:
     movw int_b, %ax
     decw %ax
     movw %ax, int_b
+    call update_arrays
+    call fix_arrays
+    call append_out
     jmp parse_next
 
 parse_command_out_c:
@@ -350,15 +356,24 @@ parse_command_out_c:
     movw int_c, %ax
     decw %ax
     movw %ax, int_c
+    call update_arrays
+    call fix_arrays
+    call append_out
     jmp parse_next
 
 parse_command_failure:
+    call update_arrays
+    call fix_arrays
+    call append_failure
     jmp parse_next
 
 parse_command_invalid:
     popl %edi
     popl %esi
     popl %ecx
+    // call update_arrays
+    // call fix_arrays
+    call append_failure
     jmp parse_next
 
 
@@ -484,16 +499,59 @@ append_in_success_c:
     call strcat_asm
 
     // Empty/Full status
-    leal char_zero, %edi
-    call strcat_asm
-    leal char_zero, %edi
-    call strcat_asm
-    leal char_zero, %edi
-    call strcat_asm
+    # A
+    xorl %eax, %eax
+    movw int_a, %ax
+    cmpw max_a, %ax
+    jl append_in_a_ok
+    jmp append_in_a_full
+append_in_eval_b:
+    xorl %eax, %eax
+    movw int_b, %ax
+    cmpw max_b, %ax
+    jl append_in_b_ok
+    jmp append_in_b_full
+append_in_eval_c:
+    xorl %eax, %eax
+    movw int_c, %ax
+    cmpw max_c, %ax
+    jl append_in_c_ok
+    jmp append_in_c_full
+append_in_eval_done:
     leal char_nl_z, %edi
     call strcat_asm
-    
     jmp append_in_success_done
+
+append_in_a_ok:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_in_eval_b
+
+append_in_a_full:
+    leal char_one, %edi
+    call strcat_asm
+    jmp append_in_eval_b
+
+append_in_b_ok:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_in_eval_c
+
+append_in_b_full:
+    leal char_one, %edi
+    call strcat_asm
+    jmp append_in_eval_c
+
+append_in_c_ok:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_in_eval_done
+
+append_in_c_full:
+    leal char_one, %edi
+    call strcat_asm
+    jmp append_in_eval_done
+
 
 append_in_success_addzero_a:
     leal char_zero, %edi
@@ -518,3 +576,256 @@ append_in_success_done:
     popl %ebx
     popl %eax
     ret
+
+append_out:
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+    // Append to bufferout_asm
+    movl %edi, %esi
+    leal char_closed, %edi
+    call strcat_asm
+    leal char_open, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Sector A
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_a
+    jl append_out_addzero_a
+append_out_a:
+    leal buff_a, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Sector B
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_b
+    jl append_out_addzero_b
+append_out_b:
+    leal buff_b, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Sector C
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_c
+    jl append_out_addzero_c
+append_out_c:
+    leal buff_c, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+
+    // Empty/Full status
+    // A
+    xorl %eax, %eax
+    movw int_a, %ax
+    cmpw max_a, %ax
+    jl append_out_a_ok
+    jmp append_out_a_full
+append_out_eval_b:
+    xorl %eax, %eax
+    movw int_b, %ax
+    cmpw max_b, %ax
+    jl append_out_b_ok
+    jmp append_out_b_full
+append_out_eval_c:
+    xorl %eax, %eax
+    movw int_c, %ax
+    cmpw max_c, %ax
+    jl append_out_c_ok
+    jmp append_out_c_full
+
+append_out_a_ok:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_out_eval_b
+
+append_out_a_full:
+    leal char_one, %edi
+    call strcat_asm
+    jmp append_out_eval_b
+
+append_out_b_ok:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_out_eval_c
+
+append_out_b_full:
+    leal char_one, %edi
+    call strcat_asm
+    jmp append_out_eval_c
+
+append_out_c_ok:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_out_eval_done
+
+append_out_c_full:
+    leal char_one, %edi
+    call strcat_asm
+    jmp append_out_eval_done
+
+append_out_eval_done:
+    leal char_nl_z, %edi
+    call strcat_asm
+    jmp append_out_done
+
+append_out_addzero_a:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_out_a
+
+append_out_addzero_b:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_out_b
+
+append_out_addzero_c:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_out_c
+
+append_out_done:
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+    ret
+
+
+append_failure:
+    pushl %eax
+    pushl %ebx
+    pushl %ecx
+    pushl %edx
+    pushl %esi
+    pushl %edi
+    // Append to bufferout_asm
+    movl %edi, %esi
+    leal char_closed, %edi
+    call strcat_asm
+    leal char_closed, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Sector A
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_a
+    jl append_failure_addzero_a
+append_failure_a:
+    leal buff_a, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Sector B
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_b
+    jl append_failure_addzero_b
+append_failure_b:
+    leal buff_b, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+    // Sector C
+    xorl %eax, %eax
+    movw $10, %ax
+    cmpw $10, int_c
+    jl append_failure_addzero_c
+append_failure_c:
+    leal buff_c, %edi
+    call strcat_asm
+    leal char_sep, %edi
+    call strcat_asm
+
+    // Empty/Full status
+    // A
+    xorl %eax, %eax
+    movw int_a, %ax
+    cmpw max_a, %ax
+    jl append_failure_a_ok
+    jmp append_failure_a_full
+append_failure_eval_b:
+    xorl %eax, %eax
+    movw int_b, %ax
+    cmpw max_b, %ax
+    jl append_failure_b_ok
+    jmp append_failure_b_full
+append_failure_eval_c:
+    xorl %eax, %eax
+    movw int_c, %ax
+    cmpw max_c, %ax
+    jl append_failure_c_ok
+    jmp append_failure_c_full
+
+append_failure_a_ok:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_failure_eval_b
+
+append_failure_a_full:
+    leal char_one, %edi
+    call strcat_asm
+    jmp append_failure_eval_b
+
+append_failure_b_ok:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_failure_eval_c
+
+append_failure_b_full:
+    leal char_one, %edi
+    call strcat_asm
+    jmp append_failure_eval_c
+
+append_failure_c_ok:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_failure_eval_done
+
+append_failure_c_full:
+    leal char_one, %edi
+    call strcat_asm
+    jmp append_failure_eval_done
+
+append_failure_eval_done:
+    leal char_nl_z, %edi
+    call strcat_asm
+    jmp append_failure_done
+
+append_failure_addzero_a:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_failure_a
+
+append_failure_addzero_b:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_failure_b
+
+append_failure_addzero_c:
+    leal char_zero, %edi
+    call strcat_asm
+    jmp append_failure_c
+
+append_failure_done:
+    popl %edi
+    popl %esi
+    popl %edx
+    popl %ecx
+    popl %ebx
+    popl %eax
+    ret
+
+
